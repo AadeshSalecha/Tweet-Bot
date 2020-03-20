@@ -2,8 +2,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time
 
-twitter_username = "salec006@umn.edu"
-twitter_password = "Ilimbkiawssmgu12#"
+twitter_username = Enter Username
+twitter_password = Enter Password 
 
 def main():
   login_url = "https://www.twitter.com/login"
