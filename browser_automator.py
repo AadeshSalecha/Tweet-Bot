@@ -1,3 +1,4 @@
+import random
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
@@ -33,32 +34,37 @@ def tweet_at(driver, message):
   autotw1 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'DraftEditor-root')))
   autotw1.click()
 
+  #  slow down intervals between tweets
+  #  coorelate messages and bots
+
   element = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, 'public-DraftEditorPlaceholder-root')))
   ActionChains(driver).move_to_element(element).send_keys(message).perform()
 
-  time.sleep(1)
+  time.sleep(random.random() + 1)
   tweet = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//span[@class='css-901oao css-16my406 css-bfa6kz r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0']//span[@class='css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0'][contains(text(),'Tweet')]")))
-  # tweet.click()
+  tweet.click()
 
 def main():
+  random.seed(time.time())
   driver = init_browser()
 
   retweeter_file = 'test.txt'
-  message_content = 'Testing out my new Twitter agent.'
+  message_file = 'messages.txt'
   retweet_at_list = extract_retweeters(retweeter_file)
+  message_list = extract_retweeters(message_file)
 
   for (i, to_tweet) in enumerate(retweet_at_list):
-    print("At = ", to_tweet)
-    tweet_at(driver, '@' + to_tweet + ' ' + message_content)
+    print(i, "At = ", to_tweet)
+    tweet_at(driver, '@' + to_tweet + ' ' + message_list[i%len(message_list)])
     
-    if(i % 10 == 0):
+    if(i & (i-1) == 0):
       ans = input("Keeping tweeting? (Y/N)")
       if (ans == 'y' or ans == 'Y'):
         continue
       else:
         break
         
-	driver.quit()
+	# driver.quit()
 
 if __name__ == '__main__':
 	main()
